@@ -68,7 +68,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("/api/auth/**", "/api/product/top-selling").permitAll()
+                        .requestMatchers("/api/auth/**", "/api/product/top-selling", "/api/product/single-product/{productId}").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

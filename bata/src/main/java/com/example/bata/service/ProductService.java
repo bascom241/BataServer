@@ -74,4 +74,9 @@ public class ProductService {
         return topSellingProducts.stream().map(productMapper::productResponseDto).toList();
   }
 
+  public ProductResponseDto getSingleProduct(Long productId){
+        Product foundProduct = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product Not Found"));
+        return productMapper.productResponseDto(foundProduct);
+  }
+
 }

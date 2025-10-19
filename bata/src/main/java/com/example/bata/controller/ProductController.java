@@ -42,4 +42,11 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(topSellingProducts);
     }
 
+    @GetMapping("/single-product/{productId}")
+    public ResponseEntity<?> getSingleProduct(@PathVariable Long productId){
+        ProductResponseDto singleProduct = productService.getSingleProduct(productId);
+        return ResponseEntity.status(HttpStatus.OK).body(singleProduct);
+
+    }
+
 }

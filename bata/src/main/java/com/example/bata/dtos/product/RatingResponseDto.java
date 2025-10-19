@@ -1,16 +1,16 @@
 package com.example.bata.dtos.product;
 
-import com.example.bata.model.User;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class RatingDto {
-    private long productRatingId;
+public class RatingResponseDto {
     private int productRating;
     private String productComment;
     private String firstName;
-    private User user;
 }

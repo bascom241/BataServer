@@ -1,6 +1,5 @@
 package com.example.bata.configurations;
 
-
 import com.example.bata.service.UserDetailsServiceImplementation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +19,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
+import java.util.Arrays;
 
 @EnableWebSecurity
 @Configuration
@@ -32,33 +36,58 @@ public class SecurityConfiguration {
     @Autowired
     private JwtFilter jwtFilter;
 
-   @Bean
-   public UserDetailsService userDetailsService(){
-       return userDetailsServiceImplementation;
-   }
- 
 
-   @Bean
-   public AuthenticationManager authenticationManager (AuthenticationConfiguration authenticationConfiguration) throws Exception {
-    return authenticationConfiguration.getAuthenticationManager();
-   }
 
-   @Bean
+
+    // ✅ ADD THIS MISSING BEAN - This is the crucial part!
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        System.out.println("🔐 Creating AuthenticationProvider...");
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsServiceImplementation);
+        authProvider.setPasswordEncoder(new BCryptPasswordEncoder(12));
+        System.out.println("✅ AuthenticationProvider created successfully");
+        return authProvider;
+    }
+
+
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        System.out.println("🔐 Creating AuthenticationManager...");
+        AuthenticationManager authManager = authenticationConfiguration.getAuthenticationManager();
+        System.out.println("✅ AuthenticationManager created successfully");
+        return authManager;
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-       httpSecurity.csrf(AbstractHttpConfigurer::disable)
-               .httpBasic(Customizer.withDefaults())
-               .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/register", "/api/auth/login").permitAll().anyRequest().authenticated())
-               .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-               .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+        System.out.println("🔐 Configuring SecurityFilterChain...");
 
-       return httpSecurity.build();
+        httpSecurity.csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/api/auth/**", "/api/product/top-selling").permitAll()
+                        .anyRequest().authenticated())
+                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
-   }
+        System.out.println("✅ SecurityFilterChain configured successfully");
+        return httpSecurity.build();
+    }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173","http://localhost:3000")); // React frontend
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
 
-
-
-
-
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 
 }

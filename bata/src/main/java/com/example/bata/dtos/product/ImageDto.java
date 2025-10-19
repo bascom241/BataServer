@@ -1,4 +1,14 @@
 package com.example.bata.dtos.product;
 
-public class ProductImageDto {
+import lombok.*;
+
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+public class ImageDto {
+    private long productImageId;
+    private String productImageType;
+    private String productImageName;
+    private String productImageUrl;
 }

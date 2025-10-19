@@ -47,7 +47,13 @@ public class UserDetailsServiceImplementation implements UserDetailsService {
         User newUser = userMapper.toEntity(userRequestDto);
 
         newUser.setPassword(passwordEncoder.encode(userRequestDto.getPassword()));
-        newUser.setRoles(Set.of("USER"));
+
+        if(userRequestDto.getRoles() != null && !userRequestDto.getRoles().isEmpty()){
+            newUser.setRoles(Set.copyOf(userRequestDto.getRoles()));
+        } else{
+            newUser.setRoles(Set.of("USER"));
+        }
+
 
         User savedUser = userRepository.save(newUser);
 

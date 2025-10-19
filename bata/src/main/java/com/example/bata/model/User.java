@@ -1,20 +1,21 @@
 package com.example.bata.model;
 
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
+@Setter
 public class User {
 
     @Id
@@ -33,13 +34,17 @@ public class User {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
     private Set<String> roles ;
-    private boolean isAccountNonExpired;
-    private boolean isAccountNonLocked;
-    private boolean credentialsNotExpired;
-    private boolean enabled;
+    private boolean isAccountNonExpired = true;
+    private boolean isAccountNonLocked = true ;
+    private boolean credentialsNotExpired = true;
+    private boolean enabled = true ;
     private LocalDateTime passwordLastChanged = LocalDateTime.now();
     private int failedLoggedInAttempts = 0;
     private LocalDateTime lockTime;
+
+    @OneToMany( mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference(value = "user-productRatings")
+    private List<ProductRating> productRatings;
 
 
 }

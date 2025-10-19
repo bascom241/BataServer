@@ -19,7 +19,7 @@ public class UserPrincipal implements UserDetails {
 
     private static final int PASSWORD_EXPIRY_DAYS = 90;
     public static final int MAX_FAILED_ATTEMPTS=5;
-    private static final int LOCK_TIME_IN_MINUTES = 30;
+    private static final int LOCK_TIME_IN_MINUTES = 5;
 
 
     public UserPrincipal(User user){

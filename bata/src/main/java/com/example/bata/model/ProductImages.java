@@ -1,5 +1,6 @@
 package com.example.bata.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -18,6 +19,7 @@ public class ProductImages {
     private String productImageUrl;
 
     @ManyToOne
+    @JsonIgnore
     private Product product;
 
 }

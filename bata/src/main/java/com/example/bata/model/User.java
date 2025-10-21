@@ -1,6 +1,7 @@
 package com.example.bata.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,5 +47,8 @@ public class User {
     @JsonManagedReference(value = "user-productRatings")
     private List<ProductRating> productRatings;
 
+    @OneToOne
+    @JsonIgnore
+    private Cart cart;
 
 }

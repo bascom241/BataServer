@@ -1,5 +1,6 @@
 package com.example.bata.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,6 +23,7 @@ public class ProductCategory {
     private String productCategoryImageUrl;
 
     @OneToMany(mappedBy = "productCategory", cascade = CascadeType.ALL)
+// r
     private List<Product> products = new ArrayList<>();
 
 
